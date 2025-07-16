@@ -6,7 +6,7 @@
 /*   By: dfernan3 <dfernan3@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 09:46:25 by dfernan3          #+#    #+#             */
-/*   Updated: 2025/07/16 17:56:15 by dfernan3         ###   ########.fr       */
+/*   Updated: 2025/07/16 18:01:36 by dfernan3         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*get_next_line(int fd)
 	free(tmp2);
 	return (line);
 }
-/*
+
 #include <fcntl.h>
 
 int	main(void)
@@ -105,7 +105,7 @@ int	main(void)
 	char	*line;
 
 	
-	fd = (open("texto.txt", O_RDONLY));
+	fd = (open("quijote.txt", O_RDONLY));
 	if (fd < 0)
         return (0);
 	line = get_next_line(fd);
@@ -117,4 +117,4 @@ int	main(void)
 	}
 	close(fd);
 }
-*/
+
