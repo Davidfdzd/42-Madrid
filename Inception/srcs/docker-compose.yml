@@ -1,0 +1,74 @@
+services:
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ADMIN_USER: ${MYSQL_ADMIN_USER}
+      MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    restart: always
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - inception
+
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    restart: always
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      DOMAIN_PORT: ${DOMAIN_PORT}
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      WP_TITLE: ${WP_TITLE}
+      WP_ADMIN: ${WP_ADMIN}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_USER: ${WP_USER}
+      WP_PASSWORD: ${WP_PASSWORD}
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress_data:/var/www/wordpress
+    networks:
+      - inception
+
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    restart: always
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress_data:/var/www/wordpress:ro
+      - ./requirements/nginx/certs/server.crt:/etc/ssl/certs/server.crt:ro
+      - ./requirements/nginx/certs/server.key:/etc/ssl/private/server.key:ro
+    networks:
+      - inception
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dfernan3/data/mariadb
+      o: bind
+
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dfernan3/data/wordpress
+      o: bind
+
+networks:
+  inception:
+    driver: bridge
